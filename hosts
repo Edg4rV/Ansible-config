@@ -1,14 +1,5 @@
-[staging_controller-server]
+[server_CTRL]
 server0 ansible_host=172.31.16.208
 
 [server_DB]
 server1 ansible_host=172.31.20.123
-
-
-[staging_controller_server:vars]
-ansible_user=centos
-ansible_ssh_private_key_file=/home/centos/.ssh/terraform-aws.pem
-
-[server_DB:vars]
-aansible_user=centos
-ansible_ssh_private_key_file=/home/centos/.ssh/terraform-aws.pem
