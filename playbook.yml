@@ -1,0 +1,80 @@
+---
+- name:   Install Apache Mysql
+  hosts:  server_CTRL
+  become: true
+  gathr_facts: true
+
+  vars:
+    source_file: ./MyWebSite/index.html
+    destin_file: /var/www/html
+    mysql_root_password: "Password1"
+
+  tasks:
+
+  - name: Install Apache
+    yum:  name=httpd state=latest
+
+  - name: Copy MyHomePage to Servers
+    copy: src={{ source_file }} dest={{ destin_file }} mode=05555
+    notify: Restart Apache
+
+  - name: Start Apache and Enable it on boot
+    service: name=httpd state=started enabled=true
+
+  - name: Install MariaDB
+    yum:
+      name:
+        - mariadb-server
+        - python3-PyMySQL
+      state: latest
+
+
+  - name: start mariadb
+    service:
+      name: mariadb
+      enabled: true
+      state: started
+
+
+  - name: set root password mariadb
+   mysql_user:
+      check_implicit_admin: true
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      user: root
+      password: "{{ mysql_root_password }}"
+
+
+  handlers:
+  - name: Restart Apache
+    service: name=httpd state=restarted
+
+
+  - name:   Install  Mysql
+    hosts:  server_DB
+    become: true
+    gathr_facts: true
+
+  - name: Install MariaDB
+    yum:
+     name:
+        - mariadb-server
+        - python3-PyMySQL
+      state: latest
+
+
+  - name: start mariadb
+    service:
+      name: mariadb
+      enabled: true
+      state: started
+
+  - name: set root password mariadb
+    mysql_user:
+      check_implicit_admin: true
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      user: root
+      password: "{{ mysql_root_password }}"
+
+
